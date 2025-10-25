@@ -1,0 +1,74 @@
+import { useState, useEffect } from "react";
+import AddToDo from "./AddToDo";
+import EditToDo from "./EditToDo";
+import Button from "@mui/material/Button";
+
+let initialId = 1;
+let initialTodos = [];
+
+const ToDo = () => {
+  const [todos, setTodos] = useState(initialTodos);
+  const [editingTodoId, setEditingTodoId] = useState(null);
+
+  useEffect(() => {
+  }, [todos]);
+
+  function addToDo(title) {
+    setTodos([...todos, { id: initialId++, title: title, completed: false }]);
+  }
+
+  function handleEditToDo(id, newTitle) {
+    setTodos(
+      todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, title: newTitle };
+        }
+        return todo;
+      })
+    );
+    setEditingTodoId(null);
+  }
+
+  function handleDeleteTodo(id) {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  }
+
+  return (
+    <>
+      <div>
+        <AddToDo onAddToDo={addToDo} />
+      </div>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            {editingTodoId === todo.id ? (
+              <EditToDo todo={todo} onEditToDo={handleEditToDo} />
+            ) : (
+              <>
+                {todo.title}{" "}
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    setEditingTodoId(todo.id);
+                  }}
+                >
+                  edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    handleDeleteTodo(todo.id);
+                  }}
+                >
+                  Delete
+                </Button>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
+export default ToDo;

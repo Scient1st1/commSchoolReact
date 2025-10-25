@@ -1,13 +1,12 @@
-import './App.css'
+import "./App.css";
+import ToDo from "./components/toDo";
 
 function App() {
-  
-
   return (
     <>
-     
+      <ToDo />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
