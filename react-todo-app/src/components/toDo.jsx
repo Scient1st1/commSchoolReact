@@ -55,7 +55,7 @@ const ToDo = () => {
               <EditToDo todo={todo} onEditToDo={handleEditToDo} />
             ) : (
               <>
-                <Checkbox onClick={() => changeStatus(todo.id)} />
+                <Checkbox key={todo.id} onClick={() => changeStatus(todo.id)} />
                 <span
                   style={{
                     textDecoration: todo.completed ? "line-through" : "none",
