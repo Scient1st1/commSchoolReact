@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import AddToDo from "./AddToDo";
 import EditToDo from "./EditToDo";
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
 
 let initialId = 1;
 let initialTodos = [];
@@ -34,6 +35,14 @@ const ToDo = () => {
     setTodos(todos.filter((todo) => todo.id !== id));
   }
 
+  function changeStatus(id) {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  }
+
   return (
     <>
       <div>
@@ -46,7 +55,15 @@ const ToDo = () => {
               <EditToDo todo={todo} onEditToDo={handleEditToDo} />
             ) : (
               <>
-                {todo.title}{" "}
+                <Checkbox onClick={() => changeStatus(todo.id)} />
+                <span
+                  style={{
+                    textDecoration: todo.completed ? "line-through" : "none",
+                  }}
+                >
+                  {" "}
+                  {todo.title}
+                </span>
                 <Button
                   variant="outlined"
                   onClick={() => {
