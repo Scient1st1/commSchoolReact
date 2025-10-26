@@ -11,6 +11,7 @@ const ToDo = () => {
   const [editingTodoId, setEditingTodoId] = useState(null);
 
   useEffect(() => {
+    console.log(todos);
   }, [todos]);
 
   function addToDo(title) {
