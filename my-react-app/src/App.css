@@ -1,0 +1,16 @@
+@import "tailwindcss";
+body {
+  background-image: url("./assets/bg.png");
+  padding: 60px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
