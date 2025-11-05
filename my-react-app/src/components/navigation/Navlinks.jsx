@@ -37,8 +37,12 @@ const Navlinks = () => {
           )}
         </span>
       </Link>
-      <AiOutlineHistory size={32} color="#ffffff" />
-      <AiOutlineVideoCamera size={32} color="#ffffff" />
+      <Link to={`/about`}>
+        <AiOutlineHistory size={32} color="#ffffff" />
+      </Link>
+      <Link to={`/allTrending`}>
+        <AiOutlineVideoCamera size={32} color="#ffffff" />
+      </Link>
     </div>
   );
 };

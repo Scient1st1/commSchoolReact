@@ -52,6 +52,7 @@ const Sidebar = ({ movies, addFavourites }) => {
             <ContinueWatching
               key={movie.id}
               title={movie.title}
+              id={movie.id}
               image={"https://image.tmdb.org/t/p/w500" + movie.backdrop_path}
             />
           ))}

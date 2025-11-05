@@ -6,12 +6,11 @@ import { useState, useEffect } from "react";
 function App() {
   const [movies, setMovies] = useState([]);
 
-  function addFavourites(id) {
-    const movieToAdd = movies.find((movie) => movie.id === id);
-    if (movieToAdd) {
+  function addFavourites(movie) {
+    if (movie) {
       const favourites = JSON.parse(localStorage.getItem("favourites")) || [];
-      if (!favourites.find((item) => item.id === id)) {
-        const updatedFavourites = [...favourites, movieToAdd];
+      if (!favourites.find((item) => item.id === movie.id)) {
+        const updatedFavourites = [...favourites, movie];
         localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
         window.dispatchEvent(new Event("favourites-updated"));
       }
