@@ -1,6 +1,6 @@
 const Favouriteslist = ({ favourites }) => {
   return favourites.length > 0 ? (
-    <div className="ml-10 flex flex-col w-full">
+    <div className=" flex flex-col w-full">
       <h2 className="text-white text-2xl sm:text-3xl font-bold">Favourites</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-8">
         {favourites.map((movie) => (
