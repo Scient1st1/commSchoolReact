@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/hooks/Auth";
+import { useAuthCustomHook as useAuth } from "@/hooks/Auth";
 import Image from "next/image";
 
 const Header = () => {
@@ -96,7 +96,12 @@ const Header = () => {
             {/* User icon */}
             {isLoggedIn ? (
               <button className="p-2 text-gray-700 hover:text-blue-600 transition">
-                <Image src={user?.image} alt="User" width={24} height={24} />
+                <Image
+                  src={user?.image || "/vercel.svg"}
+                  alt="User"
+                  width={24}
+                  height={24}
+                />
               </button>
             ) : (
               <Link

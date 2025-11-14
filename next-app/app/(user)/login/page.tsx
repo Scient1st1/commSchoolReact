@@ -5,11 +5,11 @@ import Link from "next/link";
 import Input from "@/components/form/Input";
 import Button from "@/components/form/Button";
 import api from "@/util/api";
-import { useAuth } from "@/hooks/Auth";
+import { useAuthCustomHook as useAuth } from "@/hooks/Auth";
 import { AxiosResponse } from "axios";
 
 const LoginPage = () => {
-  const { setIsLoggedIn, setUser } = useAuth();
+  const { setIsLoggedIn } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -49,6 +49,7 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+    setIsLoading(true);
     try {
       const response: AxiosResponse<{ accessToken: string }> = await api.post(
         "/auth/login",
@@ -57,20 +58,13 @@ const LoginPage = () => {
 
       localStorage.setItem("accessToken", response.data.accessToken);
       setIsLoggedIn(true);
-      setUser(response.data);
+      // setUser moved, will be set by the AuthProvider's useEffect
       console.log("Login successful:", response.data);
     } catch (error) {
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log("Login attempt:", formData);
-      // Handle login logic here
-    }, 1000);
   };
 
   return (
