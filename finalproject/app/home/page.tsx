@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
+import { useRef } from "react";
 
 type movieType = {
   id: number;
@@ -13,13 +14,29 @@ type movieType = {
 
 const Page = () => {
   const [movies, setMovies] = useState<movieType[]>([]);
+  const [allMovies, setAllMovies] = useState<movieType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const baseClases =
     "bg-gray-400  absolute bottom-1.5 text-white hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none";
   const bgClass = !searchTerm ? "bg-gray-400" : "bg-indigo-600";
 
-  function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(event.target.value);
+  }
+
+  function handleSearch() {
+    const filteredMovies = allMovies.filter((movie) =>
+      movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setMovies(filteredMovies);
+  }
+
+  function handleSearchClear() {
+    setSearchTerm("");
+    setMovies(allMovies);
+    if (inputRef.current) inputRef.current.value = "";
   }
 
   const API = process.env.NEXT_PUBLIC_API;
@@ -30,6 +47,7 @@ const Page = () => {
         const response = await fetch(API!);
         const data = await response.json();
         setMovies(data.results);
+        setAllMovies(data.results);
         console.log(data);
       } catch (error) {
         console.error(error);
@@ -71,14 +89,16 @@ const Page = () => {
               id="search"
               className="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
               placeholder="Search"
+              ref={inputRef}
               value={searchTerm}
-              onChange={handleSearchChange}
+              onChange={handleInputChange}
               required
             />
             <button
               type="button"
               disabled={!searchTerm}
               className={`${baseClases} end-16.5 ${bgClass}`}
+              onClick={handleSearch}
             >
               Search
             </button>
@@ -86,16 +106,16 @@ const Page = () => {
               type="button"
               disabled={!searchTerm}
               className={`${baseClases} end-1.5 ${bgClass}`}
-              onClick={() => setSearchTerm("")}
+              onClick={handleSearchClear}
             >
               Clear
             </button>
           </div>
         </form>
       </div>
-      <div className="movies container flex items-center justify-between p-4 mx-auto flex-wrap">
+      <div className="movies container flex flex-wrap justify-center gap-6 p-4 mx-auto">
         {movies.map((movie: movieType) => (
-          <div key={movie.id} className="movie w-1/4 p-4">
+          <div key={movie.id} className="movie w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4 bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
             <div className="movie-card relative">
               <Heart
                 width={30}
@@ -108,11 +128,12 @@ const Page = () => {
               <img
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
+                className="w-full h-auto rounded-md mb-4"
               />
-              <h2>{movie.title}</h2>
-              <p>{movie.overview.substring(0, 100) + "..."}</p>
-              <p>{movie.release_date}</p>
-              <p>{movie.vote_average}</p>
+              <h2 className="text-xl font-bold text-white mb-2">{movie.title}</h2>
+              <p className="text-gray-300 text-sm mb-2">{movie.overview.substring(0, 100) + "..."}</p>
+              <p className="text-gray-400 text-xs">Release Date: {movie.release_date}</p>
+              <p className="text-gray-400 text-xs">Rating: {movie.vote_average}</p>
             </div>
           </div>
         ))}
