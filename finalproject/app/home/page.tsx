@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Heart } from "lucide-react";
+import Link from "next/link";
 
 type movieType = {
   id: number;
@@ -126,32 +127,36 @@ const Page = () => {
 
       <div className="movies container flex flex-wrap justify-center gap-6 p-4 mx-auto">
         {movies.map((movie: movieType, index) => (
-          <div
-            key={`${movie.id}-${index}`}
-            className="movie w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4 bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-          >
-            <div className="movie-card relative">
-              <Heart
-                width={30}
-                height={30}
-                className="absolute top-2 right-2 text-red-600 z-10 cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                }}
-              />
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-                className="w-full h-auto rounded-md mb-4"
-              />
-              <h2 className="text-xl font-bold text-white mb-2">
-                {movie.title}
-              </h2>
-              <p className="text-gray-300 text-sm mb-2">
-                {movie.overview.substring(0, 100) + "..."}
-              </p>
+          <>
+            <div
+              key={`${movie.id}-${index}`}
+              className="movie w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4 bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
+              <Link href={`/movie/${movie.id}`} key={`${movie.id}-${index}`}>
+                <div className="movie-card relative">
+                  <Heart
+                    width={30}
+                    height={30}
+                    className="absolute top-2 right-2 text-red-600 z-10 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                    }}
+                  />
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title}
+                    className="w-full h-auto rounded-md mb-4"
+                  />
+                  <h2 className="text-xl font-bold text-white mb-2">
+                    {movie.title}
+                  </h2>
+                  <p className="text-gray-300 text-sm mb-2">
+                    {movie.overview.substring(0, 100) + "..."}
+                  </p>
+                </div>
+              </Link>
             </div>
-          </div>
+          </>
         ))}
 
         <div className="load-more text-center w-full my-8">
