@@ -17,10 +17,40 @@ const Page = () => {
   const [allMovies, setAllMovies] = useState<movieType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const [page, setPage] = useState(1);
+
+  const API = `${process.env.NEXT_PUBLIC_API}`;
+
+  async function fetchMovies(page: number) {
+    try {
+      const response = await fetch(
+        `${API}&page=${page}&sort_by=popularity.desc`
+      );
+      const data = await response.json();
+      const newMovies = data.results.filter(
+        (newMovie: movieType) =>
+          !allMovies.some((existingMovie) => existingMovie.id === newMovie.id)
+      );
+      setMovies((prevMovies) => [...prevMovies, ...newMovies]);
+      setAllMovies((prevAllMovies) => [...prevAllMovies, ...newMovies]);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  useEffect(() => {
+    fetchMovies(1);
+  }, []);
 
   const baseClases =
     "bg-gray-400  absolute bottom-1.5 text-white hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none";
   const bgClass = !searchTerm ? "bg-gray-400" : "bg-indigo-600";
+
+  function loadMore() {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchMovies(nextPage);
+  }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(event.target.value);
@@ -39,22 +69,6 @@ const Page = () => {
     if (inputRef.current) inputRef.current.value = "";
   }
 
-  const API = process.env.NEXT_PUBLIC_API;
-
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        const response = await fetch(API!);
-        const data = await response.json();
-        setMovies(data.results);
-        setAllMovies(data.results);
-        console.log(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchMovies();
-  }, []);
   return (
     <>
       <div className="filters container flex items-center justify-end p-4 mx-auto">
@@ -115,7 +129,10 @@ const Page = () => {
       </div>
       <div className="movies container flex flex-wrap justify-center gap-6 p-4 mx-auto">
         {movies.map((movie: movieType) => (
-          <div key={movie.id} className="movie w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4 bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+          <div
+            key={movie.id}
+            className="movie w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4 bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+          >
             <div className="movie-card relative">
               <Heart
                 width={30}
@@ -130,10 +147,18 @@ const Page = () => {
                 alt={movie.title}
                 className="w-full h-auto rounded-md mb-4"
               />
-              <h2 className="text-xl font-bold text-white mb-2">{movie.title}</h2>
-              <p className="text-gray-300 text-sm mb-2">{movie.overview.substring(0, 100) + "..."}</p>
-              <p className="text-gray-400 text-xs">Release Date: {movie.release_date}</p>
-              <p className="text-gray-400 text-xs">Rating: {movie.vote_average}</p>
+              <h2 className="text-xl font-bold text-white mb-2">
+                {movie.title}
+              </h2>
+              <p className="text-gray-300 text-sm mb-2">
+                {movie.overview.substring(0, 100) + "..."}
+              </p>
+              <p className="text-gray-400 text-xs">
+                Release Date: {movie.release_date}
+              </p>
+              <p className="text-gray-400 text-xs">
+                Rating: {movie.vote_average}
+              </p>
             </div>
           </div>
         ))}
@@ -141,7 +166,8 @@ const Page = () => {
           {movies.length > 0 && (
             <button
               type="button"
-              className="text-white bg-indigo-600 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5"
+              className="text-white bg-indigo-600 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 cursor-pointer"
+              onClick={loadMore}
             >
               Load More
             </button>
