@@ -27,12 +27,16 @@ const Page = () => {
         `${API}&page=${page}&sort_by=popularity.desc`
       );
       const data = await response.json();
-      const newMovies = data.results.filter(
-        (newMovie: movieType) =>
-          !allMovies.some((existingMovie) => existingMovie.id === newMovie.id)
-      );
-      setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-      setAllMovies((prevAllMovies) => [...prevAllMovies, ...newMovies]);
+      setAllMovies((prevAllMovies) => {
+        const newMovies = data.results.filter(
+          (newMovie: movieType) =>
+            !prevAllMovies.some(
+              (existingMovie) => existingMovie.id === newMovie.id
+            )
+        );
+        setMovies((prevMovies) => [...prevMovies, ...newMovies]);
+        return [...prevAllMovies, ...newMovies];
+      });
       console.log(data);
     } catch (error) {
       console.error(error);
