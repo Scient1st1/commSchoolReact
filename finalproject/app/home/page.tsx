@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Heart } from "lucide-react";
 import Link from "next/link";
+import { useFavourites } from "@/context/FavouritesContext";
 
 type movieType = {
   id: number;
@@ -18,6 +19,8 @@ const Page = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(1);
+  const { addToFavourites, removeFromFavourites, isFavourite } =
+    useFavourites();
 
   const shouldFetch = useRef(true);
 
@@ -129,7 +132,7 @@ const Page = () => {
         {movies.map((movie: movieType, index) => (
           <>
             <div
-              key={`${movie.id}-${index}`}
+              key={`${index}`}
               className="movie w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4 bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
             >
               <Link href={`/movie/${movie.id}`} key={`${movie.id}-${index}`}>
@@ -137,9 +140,16 @@ const Page = () => {
                   <Heart
                     width={30}
                     height={30}
-                    className="absolute top-2 right-2 text-red-600 z-10 cursor-pointer"
+                    className={`absolute top-4 right-4 z-10 cursor-pointer hover:text-red-400 transition-colors ${
+                      isFavourite(movie.id) ? "text-red-500" : "text-white"
+                    }`}
                     onClick={(e) => {
                       e.preventDefault();
+                      if (isFavourite(movie.id)) {
+                        removeFromFavourites(movie.id);
+                      } else {
+                        addToFavourites(movie.id);
+                      }
                     }}
                   />
                   <img
